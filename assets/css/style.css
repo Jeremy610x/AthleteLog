@@ -1,0 +1,44 @@
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #f5f7fa;
+    color: #263238;
+}
+
+nav {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+}
+
+nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #263238;
+}
+
+nav a.activo {
+    color: #081a7f;
+    font-weight: bold;
+    border-bottom: 2px solid #081a7f;
+}
+
+main {
+    min-height: 300px;
+    padding: 2rem 0;
+}
+
+footer {
+    margin-top: 2rem;
+    color: #777;
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+}
