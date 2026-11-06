@@ -42,3 +42,30 @@ footer {
     border-top: 1px solid #ddd;
     padding-top: 1rem;
 }
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+}
+
+.error {
+    color: #b00020;
+    font-weight: bold;
+}
+
+.success {
+    background-color: #e6f4ea;
+    border: 1px solid #087f5b;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
