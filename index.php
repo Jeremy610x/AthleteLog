@@ -4,26 +4,30 @@ declare(strict_types=1);
 
 $pageTitle = 'Inicio';
 
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ .  '/includes/navbar.php';
+require_once __DIR__ . '/includes/bootstrap.php';
 
+
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
+
+// Muestra el mensaje de bienvenida
+echo renderMensajeBienvenida();
+
+// Separa los deportes por categoría
+$individuales = getSportsByCategory($sports, 'individual');
+$equipo = getSportsByCategory($sports, 'equipo');
 ?>
 
 <main>
-    <h1>Bienvenido a AtheleteLog </h1>
+    <h2>Deportes individuales</h2>
 
-    <p>
-        AtheleteLog es una aplicacion web para deportistas.
-    </p>
-    <p>        
-    Registra, inicia sesión, anota tus entrenamientos y consulta tu historial
-    </p>
+    <?= renderSportsTable($individuales) ?>
 
+    <h2>Deportes de equipo</h2>
+
+    <?= renderSportsTable($equipo) ?>
 </main>
 
 <?php
-
 require_once __DIR__ . '/includes/footer.php';
-
-
 ?>

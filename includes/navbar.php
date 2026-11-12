@@ -2,39 +2,50 @@
 
 declare(strict_types=1);
 
-//se usa para que la pagina activa este resaltada 
+// Detecta qué página está abierta
 $currentPage = basename($_SERVER['PHP_SELF']);
-
-$menu = [
-    'index.php' => 'Inicio',
-    'register.php' =>'Registro',
-    'login.php' =>'Login',
-    'training.php' => 'Entrenamiento',
-    'history.php' =>'Historial',
-    'preferences.php' => 'Preferencias'
-];
-
 ?>
 
 <nav>
-
     <ul>
+        <?php if (isset($_SESSION['user'])): ?>
 
-        <?php foreach($menu as $file => $label):?>
+            <li> Hola, <?= e($_SESSION['user']['name']) ?></li>
+
             <li>
-             <a
-                href="<?= htmlspecialchars($file, ENT_QUOTES, 'UTF-8') ?>"
-                class="<?= $currentPage === $file ? 'activo' : '' ?>"
-            >
-                <?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?>
-                </a>
+                <a href="index.php">Inicio</a>
             </li>
 
+            <li>
+                <a href="training.php" class="<?= $currentPage === 'training.php' ? 'activo' : '' ?>">Nuevo entrenamiento</a>
+            </li>
 
-        <?php endforeach; ?>
+            <li>
+                <a href="history.php">Historial</a>
+            </li>
 
+            <li>
+                <a href="preferences.php">Preferencias</a>
+            </li>
 
+            <li>
+                <a href="logout.php">Cerrar sesión</a>
+            </li>
+
+        <?php else: ?>
+
+            <li>
+                <a href="index.php">Inicio</a>
+            </li>
+
+            <li>
+                <a href="register.php">Registro</a>
+            </li>
+
+            <li>
+                <a href="login.php">Login</a>
+            </li>
+
+        <?php endif; ?>
     </ul>
-
-
 </nav>

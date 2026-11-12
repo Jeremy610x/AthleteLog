@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/data.php';
-require_once __DIR__ . '/includes/functions.php';
-
+require_once __DIR__ . '/includes/bootstrap.php';
 
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
@@ -17,10 +15,12 @@ $equipo = getSportsByCategory($sports, 'equipo');
 
 ?>
 
+
+
 <main>
     <h2>Deportes individuales</h2>
 
-    <table>
+    <table border=1>
     <tr>
         <th>Deporte</th>
         <th>Unidad</th>
@@ -36,7 +36,7 @@ $equipo = getSportsByCategory($sports, 'equipo');
 
     <h2>Deportes de equipo</h2>
 
-        <table>
+        <table border=1>
             <tr>
                 <td>Deporte</td>
                 <td>Unidad</td>
