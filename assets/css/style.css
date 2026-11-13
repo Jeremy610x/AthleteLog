@@ -1,3 +1,4 @@
+
 body {
     font-family: Georgia, 'Times New Roman', serif;
     max-width: 900px;
@@ -68,4 +69,40 @@ footer {
     border: 1px solid #087f5b;
     padding: 1rem;
     margin-top: 1.5rem;
+}
+
+/* TEMA OSCURO */
+body.theme-dark {
+    background-color: #263238;
+    color: #f5f7fa;
+}
+
+.theme-dark nav {
+    border-bottom-color: #607d8b;
+}
+
+.theme-dark nav a {
+    color: #f5f7fa;
+}
+
+.theme-dark nav a.activo {
+    color: #f5f7fa;
+    border-bottom-color: #f5f7fa;
+}
+
+.theme-dark footer {
+    color: #ccc;
+    border-top-color: #607d8b;
+}
+
+.theme-dark input,
+.theme-dark select {
+    background-color: #37474f;
+    color: #fff;
+}
+
+.theme-dark .success {
+    background-color: #355b45;
+    color: #fff;
+    border-color: #087f5b;
 }
