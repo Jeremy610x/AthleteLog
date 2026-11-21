@@ -96,3 +96,101 @@ function calculateLoad (int $duration, int $rpe):int{
     return $duration * $rpe;
 
 }
+
+function initializeTrainingFile(string $file): bool
+{
+    if (file_exists($file)) {
+        return true;
+    }
+
+    $h = fopen($file, 'w');
+
+    if ($h === false) {
+        return false;
+    }
+
+    flock($h, LOCK_EX); 
+
+    $headers = [
+        'username',
+        'date',
+        'type',
+        'duration',
+        'rpe',
+        'notes',
+        'injury'
+    ];
+    //escribe en la cabecera
+    fputcsv($h, $headers);
+
+    //bloquea el archivo mientras escribe 
+    flock($h, LOCK_UN);
+    fclose($h);
+
+    return true;
+}
+
+function writeTraining(string $file, array $training): bool
+{
+    if (!initializeTrainingFile($file)) {
+        return false;
+    }
+
+    $h = @fopen($file, 'a');
+
+    if ($h === false) {
+        return false;
+    }
+    //utiliza un bloqueo mientras escribe
+    flock($h, LOCK_EX);
+
+    //se añade una fila
+    fputcsv($h, $training);
+
+    flock($h, LOCK_UN);//libera el bloqueo
+    fclose($h);
+
+    return true;
+}
+
+
+function readTrainings(string $file, string $username): ?array
+{
+    $result = [];
+
+    if (!initializeTrainingFile($file)) {
+        return null;
+    }
+
+    $h = @fopen($file, 'r');
+
+    if ($h === false) {
+        return null;
+    }
+
+    flock($h, LOCK_SH);
+
+    $headers = fgetcsv($h);
+
+    if ($headers !== false) {
+        while (($row = fgetcsv($h)) !== false) {
+
+            if (count($row) !== count($headers)) {
+                continue;
+            }
+
+            $training = array_combine($headers, $row);
+
+            if ($training !== false && $training['username'] === $username) {
+                $result[] = $training;
+            }
+        }
+    }
+
+    flock($h, LOCK_UN);
+    fclose($h);
+
+    return $result;
+}
+
+

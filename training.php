@@ -5,45 +5,37 @@ require_once __DIR__ . '/includes/bootstrap.php';
 
 requireLogin();
 
-if (!isset($_SESSION['trainings'])){
-    $_SESSION['trainings'] = [];
-}
+$file = __DIR__ . '/data/trainings.csv';
 
-$errors= [];
+$errors = [];
 $success = false;
+$fileError = '';
 
-$formData=[
-
-    'date' =>'',
-    'type'=>'',
-    'duration' =>'',
+$formData = [
+    'date' => '',
+    'type' => '',
+    'duration' => '',
     'rpe' => '',
-    'notes'=> '',
-    'has_injury'=>'',
-    'injury' =>''
-
+    'notes' => '',
+    'has_injury' => '',
+    'injury' => ''
 ];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-if ($_SERVER['REQUEST_METHOD']=='POST'){
+    foreach ($formData as $key => $value) {
 
-
-        foreach($formData as $key => $value){
-
-        if (isset($_POST[$key]) && is_string($_POST[$key])){
-
-                $formData[$key] = $_POST[$key];
+        if (isset($_POST[$key]) && is_string($_POST[$key])) {
+            $formData[$key] = $_POST[$key];
         }
-        }
+    }
 
+    $errors = validateTraining($formData);
 
-        $errors = validateTraining($formData);
-
-
-      
     if (empty($errors)) {
 
         $training = [
+            'username' => $_SESSION['user']['username'],
             'date' => $formData['date'],
             'type' => $formData['type'],
             'duration' => (int) $formData['duration'],
@@ -54,58 +46,64 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                 : ''
         ];
 
-     
-        $_SESSION['trainings'][] = $training;
+        if (writeTraining($file, $training)) {
 
-        $success = true;
+            $success = true;
 
-        
-        $formData = [
-            'date' => '',
-            'type' => '',
-            'duration' => '',
-            'rpe' => '',
-            'notes' => '',
-            'has_injury' => '',
-            'injury' => ''
-        ];
-        
+            $formData = [
+                'date' => '',
+                'type' => '',
+                'duration' => '',
+                'rpe' => '',
+                'notes' => '',
+                'has_injury' => '',
+                'injury' => ''
+            ];
+
+        } else {
+            $fileError = 'No se pudo guardar el entrenamiento.';
         }
+    }
 }
 
-//calculo de estadisticas de los entrenamientos 
-$totalSessions = count($_SESSION['trainings']);
+// Leer los entrenamientos del usuario
+$trainings = readTrainings(
+    $file,
+    $_SESSION['user']['username']
+);
 
+// Calcular estadísticas
+$totalSessions = count($trainings);
 $totalMinutes = 0;
 $totalRpe = 0;
-$totalLoad =0;
+$totalLoad = 0;
 
-foreach($_SESSION['trainings'] as $training){
+foreach ($trainings as $training) {
 
-        $totalMinutes += $training['duration'];
-        $totalRpe += $training['rpe'];
+    $totalMinutes += (int) $training['duration'];
+    $totalRpe += (int) $training['rpe'];
 
-        $totalLoad += calculateLoad($training['duration'], $training['rpe']);
-
-
+    $totalLoad += calculateLoad(
+        (int) $training['duration'],
+        (int) $training['rpe']
+    );
 }
 
-
-$averageRpe = $totalSessions >0 ? $totalRpe / $totalSessions : 0;
-
+$averageRpe = $totalSessions > 0
+    ? $totalRpe / $totalSessions
+    : 0;
 
 $pageTitle = 'Nuevo entrenamiento';
 
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
-
 ?>
 
 <main>
     <h1>Registro Entrenamiento</h1>
-    <?php if ($success): ?>
-    <p class="success">Entrenamiento guardado correctamente.</p>
-    <?php endif; ?>
+   <?php if ($fileError !== ''): ?>
+    <p class="error"><?= e($fileError) ?></p>
+<?php endif; ?>
 
 
     <p>Pagina de entrenamientos</p>
@@ -207,7 +205,7 @@ require_once __DIR__ . '/includes/navbar.php';
     </form>
 
             <h2>Entrenamientos registrados </h2>
-            <?php if (empty($_SESSION['trainings'])): ?>
+            <?php if (empty($trainings)): ?>
 
             <p>Todavia no hay entrenamientos registrados </p>
 
@@ -227,7 +225,7 @@ require_once __DIR__ . '/includes/navbar.php';
                     </thead>
 
                     <tbody>
-                        <?php foreach ($_SESSION['trainings'] as $training):?>
+                       <?php foreach ($trainings as $training):?>
                                 <tr>
                                     <td><?=  e($training['date']) ?></td>
                                     <td><?= e($training['type']) ?></td>
@@ -238,7 +236,7 @@ require_once __DIR__ . '/includes/navbar.php';
                                         <?=  e($training['injury'] !== ''? $training['injury'] : 'Ninguna') ?>
                                     </td>
                                 </tr>
-                                        <?php endforeach;?>
+                        <?php endforeach;?>
                                 </tbody>
                     </table>
             <?php endif; ?>
