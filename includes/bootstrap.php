@@ -3,9 +3,18 @@
 declare(strict_types=1);
 
 //Inicia la sesion si todavia no esta iniciado
-if (session_status() === PHP_SESSION_NONE){
+// Configuración de seguridad de la cookie de sesión
+if (session_status() === PHP_SESSION_NONE) {
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']),
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+
     session_start();
-    
 }
 
 require_once __DIR__ . '/../config/config.php';

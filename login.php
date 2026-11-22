@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
     if (isset($users[$username]) && password_verify($password, $users[$username]['password_hash'])){
 
     session_regenerate_id(true);
+    
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
     $_SESSION['user'] = [
         'username'=>$username,
@@ -50,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         <h1>Inicio de sesion </h1>
 
         <form action="login.php" method="POST">
+            <?= csrfField() ?>
 
         <div class="form-group">
             <label for="username">Nombre de usuario :</label>

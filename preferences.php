@@ -121,6 +121,7 @@ require_once __DIR__ . '/includes/navbar.php';
 <main>
     <h1>Preferences</h1>
         <form action="preferences.php" method="POST">
+            <?= csrfField() ?>
         <div class="form-group">
         <p>Tema de la aplicacion : </p>
         <label><input type="radio" name="theme" value="light" <?= $theme ==='light' ? 'checked' : '' ?>> Claro</label>

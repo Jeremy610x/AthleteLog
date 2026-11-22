@@ -23,6 +23,18 @@ $formData = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    
+    $token = isset($_POST['csrf_token']) && is_string($_POST['csrf_token'])
+        ? $_POST['csrf_token']
+        : null;
+
+    if (!verifyCsrfToken($token)) {
+        http_response_code(403);
+        exit('Petición rechazada: token CSRF no válido.');
+    }
+
+    
+
     foreach ($formData as $key => $value) {
 
         if (isset($_POST[$key]) && is_string($_POST[$key])) {
@@ -108,7 +120,8 @@ require_once __DIR__ . '/includes/navbar.php';
 
     <p>Pagina de entrenamientos</p>
     <form action="training.php" method="POST">
-
+        
+    <?= csrfField() ?>
     <div class="form-group">
         <label for="date">Fecha : </label>
         <input type="date" name="date" id="date" value="<?= e($formData['date']) ?>">

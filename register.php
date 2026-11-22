@@ -116,6 +116,8 @@ require_once __DIR__ . '/includes/navbar.php';
     <h1>Registro de deportistas</h1>
 
     <form action="register.php" method="POST">
+            <?= csrfField() ?>
+
 
         <div class="form-group">
             <label for="full_name">Nombre completo:</label>
